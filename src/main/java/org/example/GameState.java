@@ -3,15 +3,17 @@ package org.example;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class GameState {
     private int attempts;
-    private Set<String> guesses;
+    private final Set<String> guesses;
     private final String word;
 
     GameState(String word, int attempts) {
         this.attempts = attempts;
-        this.word = word;
+        this.word = word.toUpperCase();
         this.guesses = new HashSet<>();
     }
 
@@ -28,21 +30,47 @@ public class GameState {
     }
 
     boolean won() {
-        List<String> letterList = List.of(word.split("/./"));
+        List<String> letterList = List.of(word.split(""));
         return guesses.containsAll(letterList);
     }
 
     String getMaskedWord() {
-        if (guesses.isEmpty()) return word;
-        String guessesPattern = "[" + String.join("", guesses) + "]";
-        return word.replaceAll(guessesPattern, "_");
+        return Stream.of(word.split(""))
+                .map(s -> guesses.contains(s) ? s : "_")
+                .collect(Collectors.joining());
     }
 
-    // TODO: Need to return if something went wrong?
-    // Maybe return string of the error?
-    String guessLetter(String letter) {
-        // TODO: Fix logic
+    boolean guessLetter(String letter) throws GameErrorException {
+        letter = letter.toUpperCase();
+        if (guesses.contains(letter))
+            throw GameErrorException.alreadyGuessed();
+        if (isInvalidLetter(letter))
+            throw GameErrorException.invalidLetter();
         guesses.add(letter);
-        return null;
+        if (word.contains(letter)) return true;
+        attempts -= 1;
+        return false;
+    }
+
+    private boolean isInvalidLetter(String letter) {
+        return !letter.matches("^[A-Z]$");
+    }
+
+    public static class GameErrorException extends Exception {
+        public enum GameError { AlreadyGuessed, InvalidLetter }
+        public GameError error;
+
+        GameErrorException(GameError error) {
+            super();
+            this.error = error;
+        }
+
+        static GameErrorException alreadyGuessed() {
+            return new GameErrorException(GameError.AlreadyGuessed);
+        }
+
+        static GameErrorException invalidLetter() {
+            return new GameErrorException(GameError.InvalidLetter);
+        }
     }
 }
