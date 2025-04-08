@@ -7,9 +7,9 @@ import static org.junit.jupiter.api.Assertions.*;
 class GameStateTest {
 
     @Test
-    void getMaskedWord() {
+    void getMaskedWord() throws GameState.GameErrorException {
         GameState state = new GameState("CAT", 5);
         state.guessLetter("A");
-        assertEquals("C_T", state.getMaskedWord());
+        assertEquals("_A_", state.getMaskedWord());
     }
 }

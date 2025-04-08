@@ -21,7 +21,7 @@ public class GameState {
         return attempts;
     }
 
-    boolean isOver() {
+    public boolean isOver() {
         return lost() || won();
     }
 

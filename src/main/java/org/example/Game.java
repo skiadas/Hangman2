@@ -8,7 +8,7 @@ import static org.example.GameState.GameErrorException.GameError.InvalidLetter;
 
 public class Game {
 
-    private final GameState state;
+    protected final GameState state;
     protected final PrintStream out;
     private final Scanner in;
 
@@ -18,7 +18,7 @@ public class Game {
         in = new Scanner(System.in);
     }
 
-    void play() {
+    public void play() {
         while (!state.isOver()) {
             printState();
             String guess = askForLetter();
