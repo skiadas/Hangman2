@@ -11,7 +11,7 @@ public class GameState {
     private final Set<String> guesses;
     private final String word;
 
-    GameState(String word, int attempts) {
+    public GameState(String word, int attempts) {
         this.attempts = attempts;
         this.word = word.toUpperCase();
         this.guesses = new HashSet<>();
@@ -40,7 +40,7 @@ public class GameState {
                 .collect(Collectors.joining());
     }
 
-    boolean guessLetter(String letter) throws GameErrorException {
+    public boolean guessLetter(String letter) throws GameErrorException {
         letter = letter.toUpperCase();
         if (guesses.contains(letter))
             throw GameErrorException.alreadyGuessed();
